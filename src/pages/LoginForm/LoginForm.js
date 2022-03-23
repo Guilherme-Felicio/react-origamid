@@ -1,62 +1,46 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { TOKEN_POST, USER_GET } from "../../api";
 import Button from "../../components/Button/Button";
+import Error from "../../components/helper/error/error";
 import Input from "../../components/Input/Input";
 import useForm from "../../Hooks/useForm";
-
-async function getUser(token){
-  const {url, options} = USER_GET(token);
-  const res = await fetch(url, options);
-  const json = await res.json();
-  console.log(json);
-}
-
+import { UserContext } from "../../userContext";
+import styles from "./LoginForm.module.css";
+import stylesBtn from "../../components/Button/Button.module.css";
 
 function LoginForm() {
-  useEffect(() => {
-    const token = window.localStorage.getItem("token");
-    if(token)
-      getUser(token);
-  }, [])
-  
+  const { userLogin, error, loading } = React.useContext(UserContext);
   const username = useForm();
   const password = useForm();
 
-
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if(username.validate() && password.validate()){
-      const {url, options} = TOKEN_POST({username: username.value, password: password.value})
-      const res = await fetch(url, options);
-      const json = await res.json();
-      window.localStorage.setItem("token", json.token);
-      getUser(json.token)
+    if (username.validate() && password.validate()) {
+      userLogin(username.value, password.value);
     }
   };
 
   return (
-    <section onSubmit={handleSubmit}>
-      <h1>Login</h1>
-      <form action="">
-        <Input
-          type="text"
-          {...username}
-          name="username" 
-          label="Usuário"
-        />
+    <section onSubmit={handleSubmit} className="animeLeft">
+      <h1 className="title">Login</h1>
+      <form action="" className={styles.form}>
+        <Input type="text" {...username} name="username" label="Usuário" />
 
-        <Input
-          type="password"
-          name="password" 
-          label="Senha"
-          {...password}
-        />
+        <Input type="password" name="password" label="Senha" {...password} />
 
-        <Button>Entrar</Button>
+        {loading ? (
+          <Button disabled>Carregando...</Button>
+        ) : (
+          <Button>Entrar</Button>
+        )}
+        <Error error={error} />
       </form>
-      <Link to="/login/criar">Cadastro</Link>
+      <Link to="/login/perdeu" className={styles.perdeu}>Perdeu a senha?</Link>
+      <div className={styles.cadastro}>
+          <h2 className={styles.subtitle}>Cadastre-se</h2>
+          <p>Ainda não possui conta? Cadastre-se no site</p>
+          <Link to="/login/criar" className={stylesBtn.button}>Cadastro</Link>     
+      </div>
     </section>
   );
 }
