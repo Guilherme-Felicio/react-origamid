@@ -73,10 +73,11 @@ const UserStorage = ({children}) => {
         }finally{
           setLoading(false);
         }
-      }
+      } else
+        setLogin(false);
     }
     autoLogin();
-  }, [userLogout]);
+  }, [userLogout, error]);
 
   return (
     <UserContext.Provider value={{userLogin, userLogout, data, loading, error, login}}>

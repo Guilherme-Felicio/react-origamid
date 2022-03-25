@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const types = {
   email: {
-    regex: /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+    regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     message: "Insira um email válido",
-  }
+  },
 };
 
 
